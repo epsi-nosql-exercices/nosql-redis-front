@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use App\Helper\Paginator;
 
 class ProfileController extends Controller
 {
@@ -22,22 +20,48 @@ class ProfileController extends Controller
         }
     }
 
-    public function index(Client $client) {
+    public function index(Client $client, Paginator $paginator) {
+        $request = $client->get($this->api_url.'utilisateur?uuid='.session('user_uuid'), ['exceptions' => FALSE]);
+
+        if ($request->getStatusCode() == 200) {
+            $response = json_decode($request->getBody());
+            $nbMessages = count($response->listeMessage);
+            $nbFollowers = count($response->listeFollower);
+            $nbFollowing = count($response->listeFollowing);
+
+            $request = $client->get($this->api_url.'message?uuid='.session('user_uuid'), ['exceptions' => FALSE]);
+
+            if ($request->getStatusCode() == 200) {
+                $response = json_decode($request->getBody());
+                $messages = array_reverse($response);
+            }
+
+            $messages = $paginator->paginate($messages, 5);
+            $messages->withPath(route('profile'));
+
+            //dd($messages);
+            $mode = 'messages';
+            return view('profile.main', compact(['mode', 'messages', 'nbMessages', 'nbFollowers', 'nbFollowing']));
+        }
+    }
+
+    public function self(Client $client, Paginator $paginator) {
 
         $request = $client->get($this->api_url.'utilisateur?uuid='.session('user_uuid'), ['exceptions' => FALSE]);
 
         if ($request->getStatusCode() == 200) {
             $response = json_decode($request->getBody());
             $messages = array_reverse($response->listeMessage);
+            $nbMessages = count($messages);
             $nbFollowers = count($response->listeFollower);
             $nbFollowing = count($response->listeFollowing);
 
-            $messages = $this->paginate($messages, 5);
+            $messages = $paginator->paginate($messages, 5);
             $messages->withPath(route('profile'));
 
             //dd($messages);
             $mode = 'messages';
-            return view('profile.main', compact(['mode', 'messages', 'nbFollowers', 'nbFollowing']));
+            return view('profile.main', compact(['mode', 'messages', 'nbMessages', 'nbFollowers', 'nbFollowing']));
         }
     }
 
@@ -50,6 +74,7 @@ class ProfileController extends Controller
         if ($request->getStatusCode() == 200) {
             $response = json_decode($request->getBody());
             $messages = $response->listeMessage;
+            $nbMessages = count($messages);
             $nbFollowers = count($response->listeFollower);
             $nbFollowing = count($response->listeFollowing);
 
@@ -62,7 +87,7 @@ class ProfileController extends Controller
             }
 
             $mode = 'following';
-            return view('profile.main', compact(['mode', 'messages', 'nbFollowers', 'nbFollowing', 'followings']));
+            return view('profile.main', compact(['mode', 'messages', 'nbMessages', 'nbFollowers', 'nbFollowing', 'followings']));
         }
     }
 
@@ -75,6 +100,7 @@ class ProfileController extends Controller
         if ($request->getStatusCode() == 200) {
             $response = json_decode($request->getBody());
             $messages = $response->listeMessage;
+            $nbMessages = count($messages);
             $followings = $response->listeFollowing;
             $nbFollowers = count($response->listeFollower);
             $nbFollowing = count($followings);
@@ -88,7 +114,7 @@ class ProfileController extends Controller
             }
 
             $mode = 'followers';
-            return view('profile.main', compact(['mode', 'messages', 'nbFollowers', 'nbFollowing', 'followers', 'followings']));
+            return view('profile.main', compact(['mode', 'messages', 'nbMessages', 'nbFollowers', 'nbFollowing', 'followers', 'followings']));
         }
     }
 
@@ -107,7 +133,7 @@ class ProfileController extends Controller
             'exceptions' => false
         ]);
 
-        return redirect('/');
+        return back();
     }
 
     public function unfollow(Client $client) {
@@ -126,12 +152,5 @@ class ProfileController extends Controller
         ]);
 
         return back();
-    }
-
-    public function paginate($items, $perPage = 15, $page = null, $options = [])
-    {
-        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
-        $items = $items instanceof Collection ? $items : Collection::make($items);
-        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
 }
