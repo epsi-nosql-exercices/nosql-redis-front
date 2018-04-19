@@ -15,7 +15,7 @@
                     @endif
 
                     <div class="row">
-                    @forelse($users as $uuid => $pseudo)
+                    @forelse($users as $pseudo => $uuid)
                         <div class="col-xs-12 col-sm-4">
                             <div class="media-body">
                                 <h4 class="media-heading">{!! $pseudo !!}</h4>
@@ -23,13 +23,14 @@
                                     <ul class="nav nav-pills nav-pills-custom">
                                         <li>
                                             @if(in_array($uuid, $followings))
-                                                {!! TwitterButton::danger('Unfollow')
-                                                    ->asLinkTo('http://google.Fr')
-                                                 !!}
+                                                {!! Form::open(['url' => route('unfollow')]) !!}
+                                                {!! Form::hidden('uuid', $uuid) !!}
+                                                {!! TwitterButton::danger('Unfollow')->submit() !!}
+                                                {!! Form::close() !!}
                                             @else
                                                 {!! Form::open(['url' => route('follow')]) !!}
-                                                    {!! Form::hidden('uuid', $uuid) !!}
-                                                    {!! TwitterButton::primary('Follow')->submit() !!}
+                                                {!! Form::hidden('uuid', $uuid) !!}
+                                                {!! TwitterButton::primary('Follow')->submit() !!}
                                                 {!! Form::close() !!}
                                             @endif
                                         </li>

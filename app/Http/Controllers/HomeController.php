@@ -37,9 +37,12 @@ class HomeController extends Controller
         if ($request->getStatusCode() == 200) {
             $response = json_decode($request->getBody());
             $collection = collect($response);
-            $collection->pluck('uuid');
-
-            $users = $collection->pluck('pseudo', 'uuid');
+            $users = $collection->pluck('uuid', 'pseudo');
+            $currentUuid = session('user_uuid');
+            //dd($users);
+            $users = $users->reject(function($uuid) use ($currentUuid) {
+                return ($uuid == $currentUuid);
+            });
         }
 
         if (session('user_uuid')) {

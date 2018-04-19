@@ -1,12 +1,18 @@
-@forelse($followings as $following)
-    <div class="media col-xs-12 col-sm-4">
+@forelse($followings as $uuid => $pseudo)
+    <div class="col-xs-12 col-sm-4">
         <div class="media-body">
-            <h4 class="media-heading">{!! $user !!}</h4>
-            <ul class="nav nav-pills nav-pills-custom">
-                <li><a href="#"><span class="glyphicon glyphicon-share-alt"></span></a></li>
-            </ul>
+            <h4 class="media-heading">{!! $pseudo !!}</h4>
+            @if(session('user_uuid'))
+                <ul class="nav nav-pills nav-pills-custom">
+                    <li>
+                        {!! Form::open(['url' => route('unfollow')]) !!}
+                        {!! Form::hidden('uuid', $uuid) !!}
+                        {!! TwitterButton::danger('Unfollow')->submit() !!}
+                        {!! Form::close() !!}
+                    </li>
+                </ul>
+            @endif
         </div>
-        user : {{$user}}
     </div>
 @empty
     <div class="media-empty">

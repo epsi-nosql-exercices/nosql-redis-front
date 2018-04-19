@@ -5,13 +5,6 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    {!! TwitterModal::named('Tweeter')
-                         ->withTitle('Write a tweet')
-                         ->withBody(
-                            view('message.modal')
-                         )
-                         ->withButton(TwitterButton::primary('Tweet'))
-                     !!}
                     <div class="panel-heading">
                         {!! TwitterNavigation::pills([
                             [
@@ -31,6 +24,13 @@
                             ],
                         ],
                         ['class' => 'nav-profile']) !!}
+                        {!! TwitterModal::named('Tweeter')
+                         ->withTitle('Write a tweet')
+                         ->withBody(
+                            view('message.modal')
+                         )
+                         ->withButton(TwitterButton::primary('Tweet'))
+                     !!}
                     </div>
 
                     <div class="panel-body">
@@ -40,8 +40,8 @@
 
                 <ul>
                     <li>Display My Tweets (with pagination)</li>
-                    <li>Display my number of followers/following/tweets</li>
-                    <li>Write a tweet</li>
+                    <li>Display the last tweets of people i follow</li>
+                    <li>Retrieve all tweets that contains an hashtag</li>
                 </ul>
 
             </div>

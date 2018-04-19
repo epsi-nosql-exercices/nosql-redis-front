@@ -28,3 +28,4 @@ Route::prefix('/profile')->group(function() {
 });
 
 Route::post('/follow', 'ProfileController@follow')->name('follow');
+Route::post('/unfollow', 'ProfileController@unfollow')->name('unfollow');

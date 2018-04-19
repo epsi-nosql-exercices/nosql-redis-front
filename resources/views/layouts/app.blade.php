@@ -37,7 +37,14 @@
                     @if(session('user_uuid'))
                         <ul class="nav navbar-nav">
                             <li><a href="{{route('profile')}}">Dashboard</a></li>
+                            <li class="search">
+                                {!! TwitterForm::inline() !!}
+                                {!! TwitterForm::text('search', null, ['placeholder' => 'hashtag search', 'class' => 'a']) !!}
+                                {!! TwitterButton::primary('Search')->submit() !!}
+                                {!! Form::close() !!}
+                            </li>
                         </ul>
+
                     @endif
 
                     <!-- Right Side Of Navbar -->
@@ -68,6 +75,9 @@
                             <li><a href="{{ route('register') }}">Register</a></li>
                         @endif
                     </ul>
+                </div>
+                <div>
+
                 </div>
             </div>
         </nav>

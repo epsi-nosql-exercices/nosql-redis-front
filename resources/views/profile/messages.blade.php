@@ -7,7 +7,7 @@
         <div class="media-body">
             <h4 class="media-heading">{!! $message->pseudoUtilisateur !!}
                 <span class="date">
-                    {!! $dateTime->year.'-'.$dateTime->monthValue.'-'.$dateTime->dayOfMonth !!}
+                    {!! $dateTime->year.'-'.$dateTime->monthValue.'-'.$dateTime->dayOfMonth.' '.sprintf('%02d:%02d', $dateTime->hour, $dateTime->minute) !!}
                 </span>
             </h4>
             <p>{!! $message->contenu !!}</p>
@@ -20,3 +20,5 @@
         <span>You didn't post anything yet.</span>
     </div>
 @endforelse
+
+{{ $messages->links() }}
