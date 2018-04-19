@@ -38,7 +38,7 @@
                         <ul class="nav navbar-nav">
                             <li><a href="{{route('profile')}}">Dashboard</a></li>
                             <li class="search">
-                                {!! TwitterForm::inline() !!}
+                                {!! TwitterForm::inline(['url' => route('message.hashtagSearch'), 'method' => 'get']) !!}
                                 {!! TwitterForm::text('search', null, ['placeholder' => 'hashtag search', 'class' => 'a']) !!}
                                 {!! TwitterButton::primary('Search')->submit() !!}
                                 {!! Form::close() !!}
@@ -97,7 +97,7 @@
         </div>
 
         <footer class="footer">
-            v1.0 18/04/2018
+            v1.1 19/04/2018
         </footer>
     <!-- Scripts -->
     @stack('scripts')

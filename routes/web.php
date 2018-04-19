@@ -19,10 +19,12 @@ Route::prefix('/message')->group(function() {
     Route::get('/', 'MessageController@index')->name('message');
     Route::get('/write', 'MessageController@write')->name('message.write');
     Route::post('/', 'MessageController@post')->name('message.post');
+    Route::get('/hashtagSearch', 'MessageController@hashtagSearch')->name('message.hashtagSearch');
 });
 
 Route::prefix('/profile')->group(function() {
     Route::get('/', 'ProfileController@index')->name('profile');
+    Route::get('/self', 'ProfileController@self')->name('profile.self');
     Route::get('/following', 'ProfileController@following')->name('profile.following');
     Route::get('/followers', 'ProfileController@followers')->name('profile.followers');
 });
